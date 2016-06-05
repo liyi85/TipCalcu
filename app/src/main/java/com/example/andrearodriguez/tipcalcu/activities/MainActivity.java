@@ -78,29 +78,60 @@ public class MainActivity extends AppCompatActivity {
         hideKeyboard();
 
         String strInputTotal = inputBill.getText().toString().trim();
-        if (!strInputTotal.isEmpty()){
+        if (!strInputTotal.isEmpty()) {
             double total = Double.parseDouble(strInputTotal);
             int tipPercentage = getTipPercentage();
-            double tip = total * (tipPercentage/100d);
+            double tip = total * (tipPercentage / 100d);
 
-            String strTip = String.format(getString(R.string.global_message_tip),tip);
+            String strTip = String.format(getString(R.string.global_message_tip), tip);
             txtTip.setVisibility(View.VISIBLE);
             txtTip.setText(strTip);
         }
     }
 
     private int getTipPercentage() {
-        return DEFAULT_TIP_PERCENTAGE;
+        int tipPercentage = DEFAULT_TIP_PERCENTAGE;
+        String strInputTipPercentage = etPercentage.getText().toString().trim();
+        if(!strInputTipPercentage.isEmpty()){
+            tipPercentage=Integer.parseInt(strInputTipPercentage);
+        }else{
+            etPercentage.setText(String.valueOf(tipPercentage));
+        }
+        return tipPercentage;
+    }
+
+    @OnClick(R.id.btn_increase)
+    public void handleClickIncrease() {
+        hideKeyboard();
+        handleTipChange(TIP_STEP_CHANGE);
+
+    }
+
+    private void handleTipChange(int change) {
+        int tipPercentage = getTipPercentage();
+        tipPercentage += change;
+        if (tipPercentage>0){
+            etPercentage.setText(String.valueOf(tipPercentage));
+        }
+
+    }
+
+    @OnClick(R.id.btn_decrease)
+    public void handleClickDecrease() {
+        hideKeyboard();
+        handleTipChange(-TIP_STEP_CHANGE);
     }
 
     private void hideKeyboard() {
         InputMethodManager inputManager = (InputMethodManager)
                 getSystemService(Context.INPUT_METHOD_SERVICE);
-        try{
+        try {
             inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
                     InputMethodManager.HIDE_NOT_ALWAYS);
-        }catch (NullPointerException npe){
-            Log.e(getLocalClassName(),Log.getStackTraceString(npe));
+        } catch (NullPointerException npe) {
+            Log.e(getLocalClassName(), Log.getStackTraceString(npe));
         }
     }
 }
+
+
