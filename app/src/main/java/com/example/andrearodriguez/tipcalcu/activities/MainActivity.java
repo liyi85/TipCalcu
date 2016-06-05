@@ -16,6 +16,8 @@ import android.widget.TextView;
 
 import com.example.andrearodriguez.tipcalcu.R;
 import com.example.andrearodriguez.tipcalcu.TipCalcApp;
+import com.example.andrearodriguez.tipcalcu.fragments.TipHistoryListFragment;
+import com.example.andrearodriguez.tipcalcu.fragments.TipHistoryListFragmentListener;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -39,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.txtTip)
     TextView txtTip;
 
+    private TipHistoryListFragmentListener fragmentListener;
+
     private final static int TIP_STEP_CHANGE = 1;
     private final static int DEFAULT_TIP_PERCENTAGE = 10;
 
@@ -47,6 +51,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        TipHistoryListFragment fragment = (TipHistoryListFragment) getSupportFragmentManager()
+                                        .findFragmentById(R.id.fragmentList);
+        fragment.setRetainInstance(true);
+        fragmentListener = (TipHistoryListFragmentListener)fragment;
     }
 
     @Override
@@ -84,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
             double tip = total * (tipPercentage / 100d);
 
             String strTip = String.format(getString(R.string.global_message_tip), tip);
+            fragmentListener.action(strTip);
             txtTip.setVisibility(View.VISIBLE);
             txtTip.setText(strTip);
         }
